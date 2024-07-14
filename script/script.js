@@ -4,8 +4,8 @@ let currentRound = 0;
 
 const rounds = [
     { prob: 1.0, multiplier: 1.2 },
-    { prob: 0.81, multiplier: 1.5 },
-    { prob: 0.35, multiplier: 1.8 },
+    { prob: 0.75, multiplier: 1.5 },
+    { prob: 0.5, multiplier: 1.8 },
     { prob: 0.2, multiplier: 2.5 },
     { prob: 0.0, multiplier: 10 }
 ];
@@ -30,7 +30,7 @@ initialMoneyForm.addEventListener('submit', function(event) {
     }
 
     currentMoney = initialMoney;
-    currentMoneyElement.textContent = `Current Money: Rp ${currentMoney.toFixed(2)}`;
+    currentMoneyElement.textContent = `Uang Sekarang: Rp ${currentMoney.toFixed(2)}`;
     initialMoneyForm.classList.add('hidden');
     gameSection.classList.remove('hidden');
 });
@@ -38,17 +38,28 @@ initialMoneyForm.addEventListener('submit', function(event) {
 betForm.addEventListener('submit', function(event) {
     event.preventDefault();
 
-    if (betButton.textContent === "Ulang Permainan") {
+    if (betButton.textContent === "Retry") {
         resetGame();
         return;
     }
 
     const betAmount = parseFloat(betAmountInput.value);
     
-    if (betAmount > currentMoney) {
-        resultElement.textContent = 'Kamu tidak punya cukup uang untuk bertaruh';
+    if (betAmount < 50000) {
+        resultElement.textContent = 'Jumlah taruhan minimal adalah Rp 50.000.';
         resultElement.classList.add('text-red-500');
         return;
+    }
+
+    if (betAmount > currentMoney) {
+        resultElement.textContent = 'Kamu tidak punya cukup uang untuk bertaruh.';
+        resultElement.classList.add('text-red-500');
+        return;
+    }
+    else {
+        resultElement.classList.remove('text-red-500');
+        resultElement.classList.add('text-green-500');
+        resultElement.textContent = '';
     }
     
     currentMoney -= betAmount;
@@ -64,28 +75,29 @@ betForm.addEventListener('submit', function(event) {
     } else {
         roundResult += `Lose. You lost Rp ${betAmount.toFixed(2)}. `;
         betButton.textContent = "Retry";
+        resultElement.classList.remove('text-green-500');
         resultElement.classList.add('text-red-500');
+        roundInfoElement.textContent = "Game Over!";
     }
 
-    roundResult += `Current Money: Rp ${currentMoney.toFixed(2)}<br>`;
+    roundResult += `Uang Sekarang: Rp ${currentMoney.toFixed(2)}<br>`;
     resultElement.innerHTML += roundResult;
     currentRound += 1;
 
-    if (currentRound >= rounds.length && betButton.textContent !== "Retry") {
-        roundInfoElement.textContent = "Game Over!";
+    if (currentRound >= rounds.length && betButton.textContent !== "Retry" && isWin) {
         betButton.textContent = "Retry";
     } else {
         roundInfoElement.textContent = `Round: ${currentRound + 1}`;
     }
 
-    currentMoneyElement.textContent = `Current Money: Rp ${currentMoney.toFixed(2)}`;
+    currentMoneyElement.textContent = `Uang Sekarang: Rp ${currentMoney.toFixed(2)}`;
 });
 
 function resetGame() {
     currentRound = 0;
     resultElement.innerHTML = '';
     resultElement.classList.remove('text-red-500');
-    betButton.textContent = "Place Bet";
+    betButton.textContent = "Atur Bet";
     roundInfoElement.textContent = "Round: 1";
-    currentMoneyElement.textContent = `Current Money: Rp ${currentMoney.toFixed(2)}`;
+    currentMoneyElement.textContent = `Uang Sekarang: Rp ${currentMoney.toFixed(2)}`;
 }
