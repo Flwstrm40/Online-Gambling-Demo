@@ -5,7 +5,7 @@ let rounds = [
     { prob: 1.0, multiplier: 1.2 },
     { prob: 0.87, multiplier: 1.5 },
     { prob: 0.75, multiplier: 1.8 },
-    { prob: 0.50, multiplier: 2.5 },
+    { prob: 0.60, multiplier: 2.5 },
     { prob: 0.30, multiplier: 10 }
 ];
 const initialMoneyForm = document.getElementById('initialMoneyForm');
